@@ -1,4 +1,5 @@
 import logging
+import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application,
@@ -9,19 +10,13 @@ from telegram.ext import (
     ContextTypes,
 )
 
-# ============================================================
-# ⚙️ YAHAN APNI DETAILS BHARO — SIRF 3 JAGAH
-# ============================================================
-
-import os
+# Railway Variables se automatically aayega
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 CHANNEL_ID = int(os.environ.get("CHANNEL_ID"))
 PASSWORD = os.environ.get("PASSWORD")
-# ============================================================
 
 logging.basicConfig(level=logging.INFO)
 
-# /start command — user bot open kare toh yeh message aayega
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton("🔐 Channel Join Karo", callback_data="join")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -33,7 +28,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=reply_markup,
     )
 
-# Button click hone par password maango
 async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -43,13 +37,10 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE):
             parse_mode="Markdown"
         )
 
-# User jo bhi type kare — password check karo
 async def check_password(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_input = update.message.text.strip()
-
     if user_input == PASSWORD:
         try:
-            # Single-use invite link banao
             invite = await context.bot.create_chat_invite_link(
                 chat_id=CHANNEL_ID,
                 member_limit=1,
